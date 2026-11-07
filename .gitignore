@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
+.env
+*.log
+backend/uploads/*
+!backend/uploads/.gitkeep
+datasets/*.zip
+datasets/*.csv

@@ -1,0 +1,23 @@
+# --- Web / API ---
+fastapi
+uvicorn[standard]
+streamlit
+requests
+python-multipart
+
+# --- Datos ---
+pandas
+numpy
+scikit-learn
+holidays
+
+# --- Modelos estadísticos ---
+statsmodels
+prophet
+
+# --- Árboles y boosting ---
+xgboost
+lightgbm
+
+# --- Deep learning ---
+torch
