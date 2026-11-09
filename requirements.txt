@@ -21,3 +21,4 @@ lightgbm
 
 # --- Deep learning ---
 torch
+openpyxl

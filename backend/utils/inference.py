@@ -1,12 +1,13 @@
 import time
-
+ 
 import numpy as np
 import pandas as pd
-
+ 
 from models.registry import MODELS, available, get_model
+from . import progress
 from .metrics import metrics
-
-
+ 
+ 
 def run_forecast(series, model_ids, H, mode="backtest", country=None):
     """backtest: entrena sin los últimos H días y compara con lo real.
     future: entrena con todo y proyecta H días hacia adelante."""
@@ -16,11 +17,11 @@ def run_forecast(series, model_ids, H, mode="backtest", country=None):
         raise ValueError("Se necesitan al menos 120 días de entrenamiento; reduce el horizonte.")
     y, idx = train.values.astype(float), train.index
     dates = series.index[-H:] if back else pd.date_range(series.index[-1] + pd.Timedelta(days=1), periods=H)
+    ids = [m for m in model_ids if m in MODELS]
     out = []
-    for mid in model_ids:
-        if mid not in MODELS:
-            continue
+    for i, mid in enumerate(ids):
         item = {"id": mid, "name": MODELS[mid]["name"], "pred": None, "metrics": None, "error": None}
+        progress.set_span(i / len(ids), (i + 1) / len(ids), f"Entrenando {MODELS[mid]['name']}…")
         t0 = time.time()
         try:
             if not available(mid):
@@ -32,5 +33,6 @@ def run_forecast(series, model_ids, H, mode="backtest", country=None):
         except Exception as e:
             item["error"] = f"{type(e).__name__}: {e}"
         item["seconds"] = round(time.time() - t0, 1)
+        progress.report(1.0)
         out.append(item)
     return {"mode": mode, "horizon": H, "dates": [str(d.date()) for d in dates], "results": out}
